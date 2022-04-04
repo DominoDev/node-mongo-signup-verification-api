@@ -61,6 +61,6 @@ async function getListing(id) {
 
 
 function basicDetails(listing) {
-    const { id, title} = listing;
-    return { id, title };
+    const { id} = listing;
+    return { id };
 }

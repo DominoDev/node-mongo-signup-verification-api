@@ -13,11 +13,19 @@ router.post('/', authorize(), createSchema, create);
 router.put('/:id', authorize(), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
 
+
+//router.get('/',  getAll);
+//router.get('/:id', getById);
+//router.post('/', createSchema, create);
+//router.put('/:id', updateSchema, update);
+//router.delete('/:id', _delete);
+
+
 module.exports = router;
 
 
 function getAll(req, res, next) {
-    console.log(req.user.id);
+    //console.log(req.user.id);
     listingService.getAll()
         .then(listings => res.json(listings))
         .catch(next);
@@ -37,19 +45,22 @@ function getById(req, res, next) {
 function createSchema(req, res, next) {
     console.log('listing.createSchema')
     const schema = Joi.object({
-        title: Joi.string().required()
-//        firstName: Joi.string().required(),
-//        lastName: Joi.string().required(),
-//        email: Joi.string().email().required(),
-//        password: Joi.string().min(6).required(),
-//        confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
-//        role: Joi.string().valid(Role.Admin, Role.User).required()
+        description: Joi.string().required(),
+        address1: Joi.string().required(),
+        address2: Joi.string().allow(''),
+        city: Joi.string().required(),                        
+        state: Joi.string().required(),                        
+        postalCode: Joi.string().required(), 
+        eventDays: Joi.array().items(Joi.object({
+            startTime: Joi.date().required(),
+            endTime: Joi.date().required()}))
     });
     validateRequest(req, next, schema);
 }
 
 function create(req, res, next) {
-    console.log('listing.create')
+    console.log('listing.create');
+    console.log(req.user);
     listingService.create(req.body, req)
         .then(listing => res.json(listing))
         .catch(next);
@@ -57,12 +68,13 @@ function create(req, res, next) {
 
 function updateSchema(req, res, next) {
     const schemaRules = {
-        title: Joi.string().empty('')
-//        firstName: Joi.string().empty(''),
-//        lastName: Joi.string().empty(''),
-//        email: Joi.string().email().empty(''),
-//        password: Joi.string().min(6).empty(''),
-//        confirmPassword: Joi.string().valid(Joi.ref('password')).empty('')
+        description: Joi.string().empty(''),
+        address1: Joi.string().empty(''),
+        address2: Joi.string().empty(''),
+        city: Joi.string().empty(''),
+        state: Joi.string().empty(''),
+        postalCode: Joi.string().empty(''),
+        eventDays: Joi.string().empty('')
     };
 
     // only admins can update role
