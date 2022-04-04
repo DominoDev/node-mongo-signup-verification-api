@@ -37,6 +37,7 @@ function authenticate(req, res, next) {
     accountService.authenticate({ email, password, ipAddress })
         .then(({ refreshToken, ...account }) => {
             setTokenCookie(res, refreshToken);
+            account.refreshToken = refreshToken;
             res.json(account);
         })
         .catch(next);
@@ -48,6 +49,7 @@ function refreshToken(req, res, next) {
     accountService.refreshToken({ token, ipAddress })
         .then(({ refreshToken, ...account }) => {
             setTokenCookie(res, refreshToken);
+            account.refreshToken = refreshToken;
             res.json(account);
         })
         .catch(next);
