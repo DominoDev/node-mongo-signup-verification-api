@@ -6,6 +6,8 @@ const authorize = require('_middleware/authorize')
 const Role = require('_helpers/role');
 const accountService = require('./account.service');
 
+
+
 // routes
 router.post('/authenticate', authenticateSchema, authenticate);
 router.post('/refresh-token', refreshToken);
@@ -84,6 +86,13 @@ function registerSchema(req, res, next) {
         title: Joi.string().required(),
         firstName: Joi.string().required(),
         lastName: Joi.string().required(),
+        address1: Joi.string().required(),
+        address2: Joi.string().allow(''),
+        city: Joi.string().required(),                        
+        state: Joi.string().required(),                        
+        postalCode: Joi.string().required(),                        
+        longitude: Joi.any().allow(''),
+        latitude: Joi.any().allow(''),
         email: Joi.string().email().required(),
         password: Joi.string().min(6).required(),
         confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
@@ -174,6 +183,13 @@ function createSchema(req, res, next) {
         title: Joi.string().required(),
         firstName: Joi.string().required(),
         lastName: Joi.string().required(),
+        address1: Joi.string().required(),
+        address2: Joi.string().allow(''),
+        city: Joi.string().required(),                        
+        state: Joi.string().required(),                        
+        postalCode: Joi.string().required(),
+        longitude: Joi.any().allow(''),
+        latitude: Joi.any().allow(''),        
         email: Joi.string().email().required(),
         password: Joi.string().min(6).required(),
         confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
@@ -193,6 +209,13 @@ function updateSchema(req, res, next) {
         title: Joi.string().empty(''),
         firstName: Joi.string().empty(''),
         lastName: Joi.string().empty(''),
+        address1: Joi.string().empty(''),
+        address2: Joi.string().empty(''),
+        city: Joi.string().empty(''),
+        state: Joi.string().empty(''),
+        postalCode: Joi.string().empty(''),
+        longitude: Joi.any().empty(''),
+        latitude: Joi.any().empty(''),
         email: Joi.string().email().empty(''),
         password: Joi.string().min(6).empty(''),
         confirmPassword: Joi.string().valid(Joi.ref('password')).empty('')
@@ -239,3 +262,4 @@ function setTokenCookie(res, token) {
     };
     res.cookie('refreshToken', token, cookieOptions);
 }
+

@@ -4,6 +4,17 @@ const crypto = require("crypto");
 const sendEmail = require('_helpers/send-email');
 const db = require('_helpers/db');
 const Role = require('_helpers/role');
+
+const NodeGeocoder = require('node-geocoder');
+
+const options = {
+  provider: 'mapquest',
+  apiKey: process.env.MAPQUEST_API_KEY, // for Mapquest, OpenCage, Google Premier
+  formatter: null // 'gpx', 'string', ...
+};
+
+const geocoder = NodeGeocoder(options);
+
 const secret = process.env.SECRET;
 
 module.exports = {
@@ -173,6 +184,12 @@ async function create(params) {
 
     // hash password
     account.passwordHash = hash(params.password);
+    
+//    const coordinates = await getCoordinates(account.address1, account.city, account.state, account.postalCode);
+//    account.latitude = coordinates.latitude;    
+//    account.longitude = coordinates.longitude;   
+
+
 
     // save account
     await account.save();
@@ -193,9 +210,20 @@ async function update(id, params) {
         params.passwordHash = hash(params.password);
     }
 
+    if(params.address2 == null || params.address2 == ''){
+        account.address2 = '';
+    }
+
+//    const coordinates = await getCoordinates(params.address1, params.city, params.state, params.postalCode);
+//    account.latitude = coordinates.latitude;    
+//    account.longitude = coordinates.longitude;    
+  
+
+
     // copy params to account and save
     Object.assign(account, params);
     account.updated = Date.now();
+ 
     await account.save();
 
     return basicDetails(account);
@@ -245,8 +273,8 @@ function randomTokenString() {
 }
 
 function basicDetails(account) {
-    const { id, title, firstName, lastName, email, role, created, updated, isVerified } = account;
-    return { id, title, firstName, lastName, email, role, created, updated, isVerified };
+    const { id, title, firstName, lastName, email, address1, address2, city, state, postalCode, latitude, longitude, role, created, updated, isVerified } = account;
+    return { id, title, firstName, lastName, email, address1, address2, city, state, postalCode, latitude, longitude, role, created, updated, isVerified };
 }
 
 async function sendVerificationEmail(account, origin) {
@@ -303,4 +331,28 @@ async function sendPasswordResetEmail(account, origin) {
         html: `<h4>Reset Password Email</h4>
                ${message}`
     });
+}
+
+async function getCoordinates(address, city, state, zip){
+    const coordinates = {latitude:0, longitude : 0};
+    try{
+    const addy = `${address}, ${city}, ${state} ${zip}`;
+    console.log(addy)
+    console.log(coordinates);
+    geocoder.geocode({ address: addy }, (err, location) => { 
+    if(err){
+        console.error(err);
+    }else{
+        coordinates.latitude = location[0].latitude;    
+        coordinates.longitude = location[0].longitude;   
+        console.log(coordinates);    
+     }
+    });
+}catch(err){
+    console.error(err);
+
+}finally{
+    return coordinates;       
+}
+
 }

@@ -1,6 +1,7 @@
 ﻿require('rootpath')();
 require('dotenv').config();
 const express = require('express');
+const logger = require('morgan');
 const app = express();
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -13,6 +14,8 @@ app.use(cookieParser());
 
 // allow cors requests from any origin and with credentials
 app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: true }));
+
+app.use(logger('dev'));
 
 // api routes
 app.use('/accounts', require('./accounts/accounts.controller'));

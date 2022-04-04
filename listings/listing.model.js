@@ -2,12 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const schema = new Schema({
+    account: { type: Schema.Types.ObjectId, ref: 'Account' },
     title: { type: String, required: true },
-    account: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'Account'
-      },
+    
     created: { type: Date, default: Date.now },
     updated: Date
 });
