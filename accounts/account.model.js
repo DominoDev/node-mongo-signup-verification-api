@@ -21,8 +21,10 @@ const schema = new Schema({
     city: { type: String, required: true },
     state:{ type: String, required: true },
     postalCode:{ type: String, required: true },
-    longitude: { type: Number},
-    latitude: { type: Number},
+    location: {
+      type: {type: String, enum: ['Point']},
+      coordinates: {type: [Number]}
+    },
     acceptTerms: Boolean,
     role: { type: String, required: true },
     verificationToken: String,
@@ -43,8 +45,8 @@ schema.virtual('isVerified').get(function () {
 schema.pre('save', async function (next) {
     try {
         res = await geocoder.geocode({ address: `${this.address1} ${this.city}, ${this.state} ${this.postalCode}` });
-        this.latitude = res[0].latitude;    
-        this.longitude = res[0].longitude;   
+        this.location = {type:"Point", coordinates:[res[0].longitude, res[0].latitude ]};
+           
       next()
     } catch (error) {
       next(error)
