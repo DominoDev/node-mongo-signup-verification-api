@@ -39,3 +39,5 @@ typings
 
 # Environment
 .env
+
+testing.rest
