@@ -35,7 +35,7 @@ async function create(params, req) {
 }
 
 async function update(id, params) {
-    const listing = await getlisting(id);
+    const listing = await getListing(id);
 
     // copy params to listing and save
     Object.assign(listing, params);
@@ -61,6 +61,7 @@ async function getListing(id) {
 
 
 function basicDetails(listing) {
-    const { id} = listing;
-    return { id };
+    const { id, account, description, address1, address2, city, state, postalCode, location, eventDays, created } = listing;
+    return { id, account, description, address1, address2, city, state, postalCode, location, eventDays, created };
 }
+

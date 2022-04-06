@@ -14,13 +14,6 @@ router.put('/:id', authorize(), updateSchema, update);
 router.delete('/:id', authorize(), _delete);
 
 
-//router.get('/',  getAll);
-//router.get('/:id', getById);
-//router.post('/', createSchema, create);
-//router.put('/:id', updateSchema, update);
-//router.delete('/:id', _delete);
-
-
 module.exports = router;
 
 
@@ -74,7 +67,9 @@ function updateSchema(req, res, next) {
         city: Joi.string().empty(''),
         state: Joi.string().empty(''),
         postalCode: Joi.string().empty(''),
-        eventDays: Joi.string().empty('')
+        eventDays: Joi.array().items(Joi.object({
+            startTime: Joi.date().empty(''),
+            endTime: Joi.date().empty('')}))    
     };
 
     // only admins can update role

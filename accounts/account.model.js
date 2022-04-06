@@ -1,14 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const NodeGeocoder = require('node-geocoder');
+const geocoder = require('_helpers/geocoder');
 
-const options = {
-  provider: 'mapquest',
-  apiKey: process.env.MAPQUEST_API_KEY,
-  formatter: null
-};
-
-const geocoder = NodeGeocoder(options);
 
 const schema = new Schema({
     email: { type: String, lowercase: true, unique: true, required: true },
