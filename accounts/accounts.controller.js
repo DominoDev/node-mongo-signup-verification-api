@@ -45,7 +45,7 @@ function authenticate(req, res, next) {
 }
 
 function refreshToken(req, res, next) {
-    const token = req.cookies.refreshToken;
+    const token = req.body.token;
     const ipAddress = req.ip;
     accountService.refreshToken({ token, ipAddress })
         .then(({ refreshToken, ...account }) => {
@@ -64,7 +64,7 @@ function revokeTokenSchema(req, res, next) {
 
 function revokeToken(req, res, next) {
     // accept token from request body or cookie
-    const token = req.body.token || req.cookies.refreshToken;
+    const token = req.body.token;
     const ipAddress = req.ip;
 
     if (!token) return res.status(400).json({ message: 'Token is required' });
