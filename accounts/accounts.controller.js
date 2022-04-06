@@ -38,7 +38,6 @@ function authenticate(req, res, next) {
     const ipAddress = req.ip;
     accountService.authenticate({ email, password, ipAddress })
         .then(({ refreshToken, ...account }) => {
-            setTokenCookie(res, refreshToken);
             account.refreshToken = refreshToken;
             res.json(account);
         })
@@ -50,7 +49,6 @@ function refreshToken(req, res, next) {
     const ipAddress = req.ip;
     accountService.refreshToken({ token, ipAddress })
         .then(({ refreshToken, ...account }) => {
-            setTokenCookie(res, refreshToken);
             account.refreshToken = refreshToken;
             res.json(account);
         })
@@ -248,14 +246,4 @@ function _delete(req, res, next) {
         .catch(next);
 }
 
-// helper functions
-
-function setTokenCookie(res, token) {
-    // create cookie with refresh token that expires in 7 days
-    const cookieOptions = {
-        httpOnly: true,
-        expires: new Date(Date.now() + 7*24*60*60*1000)
-    };
-    res.cookie('refreshToken', token, cookieOptions);
-}
 

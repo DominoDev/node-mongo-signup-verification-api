@@ -21,9 +21,6 @@ app.use(logger('dev'));
 app.use('/accounts', require('./accounts/accounts.controller'));
 app.use('/listings', require('./listings/listings.controller'));
 
-// swagger docs route
-app.use('/api-docs', require('_helpers/swagger'));
-
 // global error handler
 app.use(errorHandler);
 
