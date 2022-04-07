@@ -40,4 +40,4 @@ typings
 # Environment
 .env
 
-testing.rest
+demo.rest

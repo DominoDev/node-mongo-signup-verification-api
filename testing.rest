@@ -1,0 +1,173 @@
+@EMAIL=jason@example.com
+@PASSWORD=my-super-secret-password
+@ACCOUNT_ID = {{loadTokens.response.body.$.id}}
+@REFRESH_TOKEN = {{loadTokens.response.body.$.refreshToken}}
+@BEARER_TOKEN = {{loadTokens.response.body.$.jwtToken}}
+@EMAIL_TOKEN = 61701a7214687ed6bc512fa34f386f26220dd2281c647be146c00347f598fa1ad3c2e8451e8e2414
+@URI = http://localhost:4000
+@CONTENT_TYPE = Content-Type: application/json
+@LISTING_ID = 624b623da9483f4e706e000b
+
+
+
+POST {{URI}}/accounts/register
+{{CONTENT_TYPE}}
+
+{
+    "title": "Mr",
+    "firstName": "Jason",
+    "lastName": "Watmore",
+    "email": "{{EMAIL}}",
+    "password": "{{PASSWORD}}",
+    "confirmPassword": "{{PASSWORD}}",
+    "address1":"1013 lake circle",
+    "address2": "",
+    "city": "Thomasville",
+    "state": "GA",
+    "postalCode":"31792",
+    "acceptTerms": true
+}
+
+###
+
+POST {{URI}}/accounts/verify-email
+{{CONTENT_TYPE}}
+
+{
+    "token": "{{EMAIL_TOKEN}}"
+}
+
+###
+
+POST {{URI}}/accounts/forgot-password
+{{CONTENT_TYPE}}
+
+{
+    "email": "{{EMAIL}}"
+}
+
+###
+
+POST {{URI}}/accounts/reset-password
+{{CONTENT_TYPE}}
+
+{
+    "token": "{{EMAIL_TOKEN}}",
+    "password": "{{PASSWORD}}",
+    "confirmPassword": "{{PASSWORD}}"
+}
+
+###
+
+### This will load the variables
+# @name loadTokens
+POST {{URI}}/accounts/authenticate
+{{CONTENT_TYPE}}
+
+{
+    "email": "{{EMAIL}}",
+    "password": "{{PASSWORD}}"
+}
+
+###
+
+### This will reload the variables
+# @name loadTokens
+POST {{URI}}/accounts/refresh-token
+{{CONTENT_TYPE}}
+Authorization: Bearer {{BEARER_TOKEN}}
+
+{
+    "token": "{{REFRESH_TOKEN}}"
+}
+
+###
+
+GET {{URI}}/accounts
+Authorization: Bearer {{BEARER_TOKEN}}
+
+###
+
+GET {{URI}}/accounts/{{ACCOUNT_ID}}
+Authorization: Bearer {{BEARER_TOKEN}}
+
+###
+
+PUT {{URI}}/accounts/{{ACCOUNT_ID}}
+{{CONTENT_TYPE}}
+Authorization: Bearer {{BEARER_TOKEN}}
+
+{
+    "firstName": "Frank",
+    "lastName": "Murphy"
+}
+
+###
+
+POST {{URI}}/accounts/revoke-token
+{{CONTENT_TYPE}}
+Authorization: Bearer {{BEARER_TOKEN}}
+
+{
+    "token": "{{REFRESH_TOKEN}}"
+}
+
+###
+
+DELETE {{URI}}/accounts/{{ACCOUNT_ID}}
+Authorization: Bearer  {{BEARER_TOKEN}}
+
+###
+
+POST {{URI}}/listings
+Authorization: Bearer {{BEARER_TOKEN}}
+{{CONTENT_TYPE}}
+
+{
+  "description": "New Test 2",
+  "address1": "1013 Lake Circle",
+  "address2": "",
+  "city": "Thomasville",
+  "state": "GA",
+  "postalCode": "31792",
+  "eventDays": [
+    {"startTime": "2022-04-05T20:00:00.000Z","endTime": "2022-04-05T23:00:00.000Z"},
+    {"startTime": "2022-04-06T20:00:00.000Z", "endTime": "2022-04-06T23:00:00.000Z"}
+  ]
+}
+
+###
+
+GET {{URI}}/listings
+Authorization: Bearer {{BEARER_TOKEN}}
+
+###
+
+GET {{URI}}/listings/{{LISTING_ID}}
+Authorization: Bearer {{BEARER_TOKEN}}
+
+###
+
+PUT {{URI}}/listings/{{LISTING_ID}}
+Authorization: Bearer {{BEARER_TOKEN}}
+{{CONTENT_TYPE}}
+
+{
+  "description": "UPDATED New Test 2",
+  "address1": "1013 Lake Circle",
+  "address2": "",
+  "city": "Thomasville",
+  "state": "GA",
+  "postalCode": "31792",
+  "eventDays": [
+    {"startTime": "2022-04-05T20:00:00.000Z","endTime": "2022-04-05T23:00:00.000Z"},
+    {"startTime": "2022-04-06T20:00:00.000Z", "endTime": "2022-04-06T23:00:00.000Z"}
+  ]
+}
+
+###
+
+DELETE {{URI}}/listings/{{LISTING_ID}}
+Authorization: Bearer {{BEARER_TOKEN}}
+
+###

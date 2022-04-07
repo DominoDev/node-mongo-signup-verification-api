@@ -100,8 +100,9 @@ function registerSchema(req, res, next) {
 }
 
 function register(req, res, next) {
-    accountService.register(req.body, req.get('origin'))
-        .then(() => res.json({ message: 'Registration successful, please check your email for verification instructions' }))
+    const emt = {};
+    accountService.register(req.body, req.get('origin'), emt)
+        .then(() => res.header("X-Emt", emt.token).json({ message: 'Registration successful, please check your email for verification instructions' }))
         .catch(next);
 }
 

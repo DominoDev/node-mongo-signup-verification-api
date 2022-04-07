@@ -6,6 +6,7 @@ const db = require('_helpers/db');
 const Role = require('_helpers/role');
 
 const NodeGeocoder = require('node-geocoder');
+const { param } = require('./accounts.controller');
 
 const options = {
   provider: 'mapquest',
@@ -87,7 +88,7 @@ async function revokeToken({ token, ipAddress }) {
     await refreshToken.save();
 }
 
-async function register(params, origin) {
+async function register(params, origin, emt) {
     // validate
     if (await db.Account.findOne({ email: params.email })) {
         // send already registered error in email to prevent account enumeration
@@ -101,6 +102,8 @@ async function register(params, origin) {
     const isFirstAccount = (await db.Account.countDocuments({})) === 0;
     account.role = isFirstAccount ? Role.Admin : Role.User;
     account.verificationToken = randomTokenString();
+
+    emt.token = account.verificationToken;
 
     // hash password
     account.passwordHash = hash(params.password);
