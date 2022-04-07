@@ -125,7 +125,7 @@ async function verifyEmail({ token }) {
     await account.save();
 }
 
-async function forgotPassword({ email }, origin) {
+async function forgotPassword({ email }, origin, emt) {
     const account = await db.Account.findOne({ email });
 
     // always return ok response to prevent email enumeration
@@ -137,6 +137,8 @@ async function forgotPassword({ email }, origin) {
         expires: new Date(Date.now() + 24*60*60*1000)
     };
     await account.save();
+
+    emt.token = account.resetToken.token
 
     // send email
     await sendPasswordResetEmail(account, origin);

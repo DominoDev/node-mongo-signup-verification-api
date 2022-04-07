@@ -127,8 +127,9 @@ function forgotPasswordSchema(req, res, next) {
 }
 
 function forgotPassword(req, res, next) {
-    accountService.forgotPassword(req.body, req.get('origin'))
-        .then(() => res.json({ message: 'Please check your email for password reset instructions' }))
+    const emt = {};
+    accountService.forgotPassword(req.body, req.get('origin'), emt)
+        .then(() => res.header("X-Emt", emt.token).json({ message: 'Please check your email for password reset instructions' }))
         .catch(next);
 }
 
