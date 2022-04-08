@@ -4,16 +4,17 @@ const crypto = require("crypto");
 const sendEmail = require('_helpers/send-email');
 const db = require('_helpers/db');
 const Role = require('_helpers/role');
+const geocoder = require('_helpers/geocoder');
 
-const NodeGeocoder = require('node-geocoder');
+//const NodeGeocoder = require('node-geocoder');
 
-const options = {
-  provider: 'mapquest',
-  apiKey: process.env.MAPQUEST_API_KEY, // for Mapquest, OpenCage, Google Premier
-  formatter: null // 'gpx', 'string', ...
-};
+//const options = {
+//  provider: 'mapquest',
+//  apiKey: process.env.MAPQUEST_API_KEY, // for Mapquest, OpenCage, Google Premier
+//  formatter: null // 'gpx', 'string', ...
+//};
 
-const geocoder = NodeGeocoder(options);
+//const geocoder = NodeGeocoder(options);
 
 const secret = process.env.SECRET;
 
@@ -59,6 +60,16 @@ async function refreshToken({ token, ipAddress }) {
     const refreshToken = await getRefreshToken(token);
     const { account } = refreshToken;
 
+
+
+/** 
+ * 
+ * Should we be updating the refreshToken every time we send out a new
+ * jwt token?  It could be upto every 15 minutes. The Refresh token has
+ * an expiration of 30 days.
+ * 
+ */
+
     // replace old refresh token with a new one and save
     const newRefreshToken = generateRefreshToken(account, ipAddress);
     refreshToken.revoked = Date.now();
@@ -66,6 +77,10 @@ async function refreshToken({ token, ipAddress }) {
     refreshToken.replacedByToken = newRefreshToken.token;
     await refreshToken.save();
     await newRefreshToken.save();
+
+
+
+
 
     // generate new jwt
     const jwtToken = generateJwtToken(account);
@@ -250,12 +265,12 @@ function generateJwtToken(account) {
     return jwt.sign({ sub: account.id, id: account.id }, secret, { expiresIn: '15m' });
 }
 
-function generateRefreshToken(account, ipAddress) {
-    // create a refresh token that expires in 7 days
+function generateRefreshToken(account, ipAddress, days = 30) {
+    // create a refresh token that expires in 30 days
     return new db.RefreshToken({
         account: account.id,
         token: randomTokenString(),
-        expires: new Date(Date.now() + 7*24*60*60*1000),
+        expires: new Date(Date.now() + days*24*60*60*1000),
         createdByIp: ipAddress
     });
 }
@@ -265,8 +280,8 @@ function randomTokenString() {
 }
 
 function basicDetails(account) {
-    const  { id, title, firstName, lastName, email, address1, address2, city, state, postalCode, role, created, updated, isVerified } = account;
-    return { id, title, firstName, lastName, email, address1, address2, city, state, postalCode, role, created, updated, isVerified };
+    const  { id, title, firstName, lastName, email, address1, address2, city, state, postalCode, created, updated, isVerified } = account;
+    return { id, title, firstName, lastName, email, address1, address2, city, state, postalCode, created, updated, isVerified };
 }
 
 async function sendVerificationEmail(account, origin) {
