@@ -6,7 +6,6 @@ const db = require('_helpers/db');
 const Role = require('_helpers/role');
 
 const NodeGeocoder = require('node-geocoder');
-const { param } = require('./accounts.controller');
 
 const options = {
   provider: 'mapquest',
@@ -102,8 +101,8 @@ async function register(params, origin, emt) {
     const isFirstAccount = (await db.Account.countDocuments({})) === 0;
     account.role = isFirstAccount ? Role.Admin : Role.User;
     account.verificationToken = randomTokenString();
-
-    emt.token = account.verificationToken;
+    
+    if(!origin) emt.token = account.verificationToken;
 
     // hash password
     account.passwordHash = hash(params.password);
@@ -138,7 +137,7 @@ async function forgotPassword({ email }, origin, emt) {
     };
     await account.save();
 
-    emt.token = account.resetToken.token
+    if(!origin) emt.token = account.resetToken.token
 
     // send email
     await sendPasswordResetEmail(account, origin);

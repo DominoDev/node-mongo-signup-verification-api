@@ -3,7 +3,7 @@
 @ACCOUNT_ID = {{loadTokens.response.body.$.id}}
 @REFRESH_TOKEN = {{loadTokens.response.body.$.refreshToken}}
 @BEARER_TOKEN = {{loadTokens.response.body.$.jwtToken}}
-@EMAIL_TOKEN = 61701a7214687ed6bc512fa34f386f26220dd2281c647be146c00347f598fa1ad3c2e8451e8e2414
+@EMAIL_TOKEN = 90815432491014fd63b435ad2c57596092812042670d052acea18388ae69ea7657bc32e3d05261de
 @URI = http://localhost:4000
 @CONTENT_TYPE = Content-Type: application/json
 @LISTING_ID = 624b623da9483f4e706e000b

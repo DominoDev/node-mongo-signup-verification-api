@@ -102,7 +102,7 @@ function registerSchema(req, res, next) {
 function register(req, res, next) {
     const emt = {};
     accountService.register(req.body, req.get('origin'), emt)
-        .then(() => res.header("X-Emt", emt.token).json({ message: 'Registration successful, please check your email for verification instructions' }))
+        .then(() => res.header("X-Emt", emt.token?emt.token:"").json({ message: 'Registration successful, please check your email for verification instructions' }))
         .catch(next);
 }
 
@@ -129,7 +129,7 @@ function forgotPasswordSchema(req, res, next) {
 function forgotPassword(req, res, next) {
     const emt = {};
     accountService.forgotPassword(req.body, req.get('origin'), emt)
-        .then(() => res.header("X-Emt", emt.token).json({ message: 'Please check your email for password reset instructions' }))
+        .then(() => res.header("X-Emt", emt.token?emt.token:"").json({ message: 'Please check your email for password reset instructions' }))
         .catch(next);
 }
 
